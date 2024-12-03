@@ -19,7 +19,7 @@ public class Day3 {
 
         while (scanner.hasNextLine()) memory.append(scanner.nextLine());
 
-        Pattern pattern = Pattern.compile("mul\\(\\d{1,3},\\d{1,3}\\)");
+        Pattern pattern = Pattern.compile("(mul\\(\\d{1,3},\\d{1,3}\\))|do\\(\\)|don't\\(\\)");
         Matcher matcher = pattern.matcher(memory);
 
         ArrayList<String> instructions = new ArrayList<String>();
@@ -31,9 +31,22 @@ public class Day3 {
 
     public static int[] evalInstructions(ArrayList<String> instructions) {
 
-        int[] results = new int[instructions.size()];
+        ArrayList<Integer> results = new ArrayList<>();
+
+        boolean enabled = true;
 
         for (int i = 0; i < instructions.size(); i++) {
+            if (instructions.get(i).equals("do()")) {
+                enabled = true;
+                continue;
+            }
+            if (instructions.get(i).equals("don't()")) {
+                enabled = false;
+                continue;
+            }
+
+            if (!enabled) continue;
+
             String instruction = instructions.get(i).substring(4);
 
             String firstNumber = "", secondNumber = "";
@@ -52,10 +65,10 @@ public class Day3 {
 
             }
 
-            results[i] = Integer.parseInt(firstNumber) * Integer.parseInt(secondNumber);
+            results.add(Integer.parseInt(firstNumber) * Integer.parseInt(secondNumber));
         }
 
-        return results;
+        return results.stream().mapToInt(i -> i).toArray();
     }
 
     public static int sum(int[] array) {
