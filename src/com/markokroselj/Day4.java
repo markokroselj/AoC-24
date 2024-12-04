@@ -12,6 +12,7 @@ public class Day4 {
         ArrayList<String> lines = readLines();
 
         System.out.println(horizontalMatches(lines) + horizontalMatches(getColumns(lines)) + diagonalMatches(lines));
+        System.out.println(partTwo(lines));
     }
 
 
@@ -83,4 +84,26 @@ public class Day4 {
         return counter;
     }
 
+    public static int partTwo(ArrayList<String> lines) {
+        int counter = 0;
+        for (int i = 0; i < lines.size(); i++) {
+            for (int j = 0; j < lines.get(i).length(); j++) {
+                if (!(j < lines.get(i).length() - 2 && i < lines.size() - 2)) continue;
+                if (lines.get(i + 1).charAt(j + 1) != 'A') continue;
+
+                if (lines.get(i).charAt(j) == 'M' && lines.get(i).charAt(j + 2) == 'S')
+                    if (lines.get(i + 2).charAt(j) == 'M' && lines.get(i + 2).charAt(j + 2) == 'S') counter++;
+
+                if (lines.get(i).charAt(j) == 'S' && lines.get(i).charAt(j + 2) == 'M')
+                    if (lines.get(i + 2).charAt(j) == 'S' && lines.get(i + 2).charAt(j + 2) == 'M') counter++;
+
+                if (lines.get(i).charAt(j) == 'M' && lines.get(i).charAt(j + 2) == 'M')
+                    if (lines.get(i + 2).charAt(j) == 'S' && lines.get(i + 2).charAt(j + 2) == 'S') counter++;
+
+                if (lines.get(i).charAt(j) == 'S' && lines.get(i).charAt(j + 2) == 'S')
+                    if (lines.get(i + 2).charAt(j) == 'M' && lines.get(i + 2).charAt(j + 2) == 'M') counter++;
+            }
+        }
+        return counter;
+    }
 }
