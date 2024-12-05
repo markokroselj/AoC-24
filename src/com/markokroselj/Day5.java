@@ -50,12 +50,8 @@ public class Day5 {
     public static ArrayList<Integer[]> rightOrder(ArrayList<String> pageOrderingRules, ArrayList<Integer[]> pagesToProduce) {
         ArrayList<Integer[]> correctPageOrders = new ArrayList<>();
 
-        for (Integer[] update : pagesToProduce) {
-
-            boolean allCorrect = isUpdateCorrect(pageOrderingRules, update);
-
-            if (allCorrect) correctPageOrders.add(update);
-        }
+        for (Integer[] update : pagesToProduce)
+            if (isUpdateCorrect(pageOrderingRules, update)) correctPageOrders.add(update);
 
         return correctPageOrders;
     }
@@ -64,10 +60,8 @@ public class Day5 {
     public static ArrayList<Integer[]> wrongOrder(ArrayList<String> pageOrderingRules, ArrayList<Integer[]> pagesToProduce) {
         ArrayList<Integer[]> wrongPageOrders = new ArrayList<>();
 
-        for (Integer[] update : pagesToProduce) {
-            boolean allCorrect = isUpdateCorrect(pageOrderingRules, update);
-            if (!allCorrect) wrongPageOrders.add(update);
-        }
+        for (Integer[] update : pagesToProduce)
+            if (!isUpdateCorrect(pageOrderingRules, update)) wrongPageOrders.add(update);
 
         return wrongPageOrders;
     }
