@@ -11,7 +11,7 @@ public class Day5 {
     public static void main(String[] args) throws FileNotFoundException {
         ArrayList<String> input = readInput();
         System.out.println(Utils.sum(getMiddlePageOrders(rightOrder(getPageOrderingRules(input), getPagesToProduce(input)))));
-
+        System.out.println(Utils.sum(getMiddlePageOrders(fixOrder(getPageOrderingRules(input), wrongOrder(getPageOrderingRules(input), getPagesToProduce(input))))));
     }
 
     public static ArrayList<String> readInput() throws FileNotFoundException {
@@ -52,29 +52,68 @@ public class Day5 {
 
         for (Integer[] update : pagesToProduce) {
 
-            boolean allCorrect = true;
-            for (int j = 0; j < update.length; j++) {
-                int x = update[j];
-                for (int k = j + 1; k < update.length; k++) {
-                    boolean found = false;
-                    for (String pageOrderingRule : pageOrderingRules) {
-                        if (pageOrderingRule.equals(x + "|" + update[k])) {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        allCorrect = false;
-                        break;
-                    }
-                }
-            }
+            boolean allCorrect = isUpdateCorrect(pageOrderingRules, update);
 
             if (allCorrect) correctPageOrders.add(update);
         }
 
         return correctPageOrders;
+    }
+
+
+    public static ArrayList<Integer[]> wrongOrder(ArrayList<String> pageOrderingRules, ArrayList<Integer[]> pagesToProduce) {
+        ArrayList<Integer[]> wrongPageOrders = new ArrayList<>();
+
+        for (Integer[] update : pagesToProduce) {
+            boolean allCorrect = isUpdateCorrect(pageOrderingRules, update);
+            if (!allCorrect) wrongPageOrders.add(update);
+        }
+
+        return wrongPageOrders;
+    }
+
+    private static boolean isUpdateCorrect(ArrayList<String> pageOrderingRules, Integer[] update) {
+        boolean allCorrect = true;
+        for (int j = 0; j < update.length; j++) {
+            int x = update[j];
+            for (int k = j + 1; k < update.length; k++) {
+                boolean found = false;
+                for (String pageOrderingRule : pageOrderingRules) {
+                    if (pageOrderingRule.equals(x + "|" + update[k])) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    allCorrect = false;
+                    break;
+                }
+            }
+        }
+        return allCorrect;
+    }
+
+
+    public static ArrayList<Integer[]> fixOrder(ArrayList<String> pageOrderingRules, ArrayList<Integer[]> updates) {
+        for (Integer[] update : updates) {
+            while (!isUpdateCorrect(pageOrderingRules, update)) {
+                for (int i = 0; i < update.length; i++) {
+                    int x = update[i];
+                    for (int j = i + 1; j < update.length; j++) {
+                        boolean found = false;
+                        for (String pageOrderingRule : pageOrderingRules) {
+                            if (pageOrderingRule.equals(x + "|" + update[j])) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) swap(update, i, j);
+                    }
+                }
+            }
+        }
+        return updates;
     }
 
     public static int[] getMiddlePageOrders(ArrayList<Integer[]> orders) {
@@ -83,4 +122,11 @@ public class Day5 {
         return middles;
     }
 
+
+    public static Integer[] swap(Integer[] update, int i, int j) {
+        int tmp = update[i];
+        update[i] = update[j];
+        update[j] = tmp;
+        return update;
+    }
 }
