@@ -67,25 +67,17 @@ public class Day5 {
     }
 
     private static boolean isUpdateCorrect(ArrayList<String> pageOrderingRules, Integer[] update) {
-        boolean allCorrect = true;
         for (int j = 0; j < update.length; j++) {
             int x = update[j];
-            for (int k = j + 1; k < update.length; k++) {
-                boolean found = false;
-                for (String pageOrderingRule : pageOrderingRules) {
-                    if (pageOrderingRule.equals(x + "|" + update[k])) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    allCorrect = false;
-                    break;
-                }
-            }
+            for (int k = j + 1; k < update.length; k++)
+                if (!isPairInRules(pageOrderingRules, x, update[k])) return false;
         }
-        return allCorrect;
+        return true;
+    }
+
+    private static boolean isPairInRules(ArrayList<String> pageOrderingRules, int x, int y) {
+        for (String pageOrderingRule : pageOrderingRules) if (pageOrderingRule.equals(x + "|" + y)) return true;
+        return false;
     }
 
 
@@ -94,16 +86,8 @@ public class Day5 {
             while (!isUpdateCorrect(pageOrderingRules, update)) {
                 for (int i = 0; i < update.length; i++) {
                     int x = update[i];
-                    for (int j = i + 1; j < update.length; j++) {
-                        boolean found = false;
-                        for (String pageOrderingRule : pageOrderingRules) {
-                            if (pageOrderingRule.equals(x + "|" + update[j])) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) swap(update, i, j);
-                    }
+                    for (int j = i + 1; j < update.length; j++)
+                        if (!isPairInRules(pageOrderingRules, x, update[j])) swap(update, i, j);
                 }
             }
         }
