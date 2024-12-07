@@ -10,8 +10,8 @@ public class Day6 {
     public static void main(String[] args) throws FileNotFoundException {
         ArrayList<String> map = readMap();
         HashSet<String> visited = moveGuard(map);
-        drawRoute(map, visited);
         System.out.println(visited.size());
+        numberOfPositions(map);
     }
 
     public static ArrayList<String> readMap() throws FileNotFoundException {
@@ -26,26 +26,79 @@ public class Day6 {
         int[] initialPosition = Guard.getGuardPositionFromMap(map);
         Guard guard = new Guard(initialPosition[0], initialPosition[1]).setInitialAngle(map);
         HashSet<String> visited = new HashSet<>();
-
         visited.add(guard.getX() + "," + guard.getY());
-        while (guard.getY() > 0 && guard.getX() > 0 && (guard.getY() < map.size() - 1) && (guard.getX() < map.get(0).length() - 1)) {
+        int cornerRepetitionCounter = 0;
+        HashSet<String> cornersVisited = new HashSet<>();
 
+        while (true) {
             if ((int) Math.sin(guard.getAngle()) == 1) {
-                if (map.get(guard.getY() - 1).charAt(guard.getX()) == '#') guard.changeDirection();
+                if (guard.getY() <= 0) break;
+                if (map.get(guard.getY() - 1).charAt(guard.getX()) == '#') {
+                    guard.rotateDirection();
+                    rotate(map, guard);
+                    if (cornersVisited.contains(guard.getX() + "," + guard.getY())) cornerRepetitionCounter++;
+                    else cornersVisited.add(guard.getX() + "," + guard.getY());
+                }
             } else if ((int) Math.sin(guard.getAngle()) == -1) {
-                if (map.get(guard.getY() + 1).charAt(guard.getX()) == '#') guard.changeDirection();
+                if (guard.getY() >= map.size() - 1) break;
+                if (map.get(guard.getY() + 1).charAt(guard.getX()) == '#') {
+                    guard.rotateDirection();
+                    rotate(map, guard);
+                    if (cornersVisited.contains(guard.getX() + "," + guard.getY())) cornerRepetitionCounter++;
+                    else cornersVisited.add(guard.getX() + "," + guard.getY());
+                }
             } else if ((int) Math.cos(guard.getAngle()) == 1) {
-                if (map.get(guard.getY()).charAt(guard.getX() + 1) == '#') guard.changeDirection();
+                if (guard.getX() >= map.get(guard.getY()).length() - 1) break;
+                if (map.get(guard.getY()).charAt(guard.getX() + 1) == '#') {
+                    guard.rotateDirection();
+                    rotate(map, guard);
+                    if (cornersVisited.contains(guard.getX() + "," + guard.getY())) cornerRepetitionCounter++;
+                    else cornersVisited.add(guard.getX() + "," + guard.getY());
+                }
             } else if ((int) Math.cos(guard.getAngle()) == -1) {
-                if (map.get(guard.getY()).charAt(guard.getX() - 1) == '#') guard.changeDirection();
+                if (guard.getX() <= 0) break;
+                if (map.get(guard.getY()).charAt(guard.getX() - 1) == '#') {
+                    guard.rotateDirection();
+                    rotate(map, guard);
+                    if (cornersVisited.contains(guard.getX() + "," + guard.getY())) cornerRepetitionCounter++;
+                    else cornersVisited.add(guard.getX() + "," + guard.getY());
+                }
             }
+
+            if (cornerRepetitionCounter == 4) return null;
 
             guard.move();
             visited.add(guard.getX() + "," + guard.getY());
         }
 
-
         return visited;
+    }
+
+    public static Guard rotate(ArrayList<String> map, Guard guard) {
+        if ((int) Math.sin(guard.getAngle()) == 1) {
+
+            if (map.get(guard.getY() - 1).charAt(guard.getX()) == '#') {
+                guard.rotateDirection();
+                rotate(map, guard);
+            } else return guard;
+        } else if ((int) Math.sin(guard.getAngle()) == -1) {
+            if (map.get(guard.getY() + 1).charAt(guard.getX()) == '#') {
+                guard.rotateDirection();
+                rotate(map, guard);
+            } else return guard;
+        } else if ((int) Math.cos(guard.getAngle()) == 1) {
+            if (map.get(guard.getY()).charAt(guard.getX() + 1) == '#') {
+                guard.rotateDirection();
+                rotate(map, guard);
+            } else return guard;
+        } else if ((int) Math.cos(guard.getAngle()) == -1) {
+            if (map.get(guard.getY()).charAt(guard.getX() - 1) == '#') {
+                guard.rotateDirection();
+                rotate(map, guard);
+            } else return guard;
+        }
+
+        return guard;
     }
 
     public static void drawRoute(ArrayList<String> map, HashSet<String> visited) {
@@ -56,6 +109,44 @@ public class Day6 {
             }
             System.out.println();
         }
+    }
+
+    public static int numberOfPositions(ArrayList<String> map) {
+        int counter = 0;
+        int c = 1;
+        for (int i = 0; i < map.size(); i++) {
+            for (int j = 0; j < map.get(i).length(); j++) {
+                if (map.get(i).charAt(j) == '#' || map.get(i).charAt(j) == '^' || map.get(i).charAt(j) == 'v' || map.get(i).charAt(j) == '>' || map.get(i).charAt(j) == '<') {
+                    continue;
+                }
+
+                ArrayList<String> newMap = new ArrayList<>(map);
+                StringBuilder tmp = new StringBuilder();
+                for (int k = 0; k < newMap.get(i).length(); k++) {
+                    if (k == j) tmp.append('#');
+                    else tmp.append(newMap.get(i).charAt(k));
+                }
+                newMap.set(i, tmp.toString());
+
+                if (moveGuard(newMap) == null) {
+                  /*  System.out.println();
+                    System.out.println(c++ + ".");
+
+                    for (int k = 0; k < newMap.size(); k++) {
+                        for (int l = 0; l < map.get(k).length(); l++) {
+                            if (k == i && l == j) System.out.print('⭕');
+                            else System.out.print(map.get(k).charAt(l));
+                        }
+                        System.out.println();
+                    }*/
+                    counter++;
+                }
+
+            }
+        }
+
+        System.out.println(counter);
+        return counter;
     }
 }
 
@@ -70,7 +161,7 @@ class Guard {
         this.y = y;
     }
 
-    public void changeDirection() {
+    public void rotateDirection() {
         this.angle = ((this.angle + (Math.PI / 2))) % (2 * Math.PI);
 
     }
