@@ -76,22 +76,25 @@ public class Day6 {
 
     public static Guard rotate(ArrayList<String> map, Guard guard) {
         if ((int) Math.sin(guard.getAngle()) == 1) {
-
+            if (guard.getY() <= 0) return guard;
             if (map.get(guard.getY() - 1).charAt(guard.getX()) == '#') {
                 guard.rotateDirection();
                 rotate(map, guard);
             } else return guard;
         } else if ((int) Math.sin(guard.getAngle()) == -1) {
+            if (guard.getY() >= map.size() - 1) return guard;
             if (map.get(guard.getY() + 1).charAt(guard.getX()) == '#') {
                 guard.rotateDirection();
                 rotate(map, guard);
             } else return guard;
         } else if ((int) Math.cos(guard.getAngle()) == 1) {
+            if (guard.getX() >= map.get(guard.getY()).length() - 1) return guard;
             if (map.get(guard.getY()).charAt(guard.getX() + 1) == '#') {
                 guard.rotateDirection();
                 rotate(map, guard);
             } else return guard;
         } else if ((int) Math.cos(guard.getAngle()) == -1) {
+            if (guard.getX() <= 0) return guard;
             if (map.get(guard.getY()).charAt(guard.getX() - 1) == '#') {
                 guard.rotateDirection();
                 rotate(map, guard);
