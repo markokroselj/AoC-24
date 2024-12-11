@@ -8,7 +8,8 @@ import java.util.Scanner;
 
 public class Day10 {
 
-    static HashSet<String> visited = new HashSet<>();
+    static HashSet<String> visitedTail = new HashSet<>();
+    static int counter = 0;
 
     public static void main(String[] args) throws FileNotFoundException {
         ArrayList<int[]> topographicMap = readMap();
@@ -17,13 +18,14 @@ public class Day10 {
         for (int i = 0; i < topographicMap.size(); i++) {
             for (int j = 0; j < topographicMap.get(i).length; j++) {
                 if (topographicMap.get(i)[j] == 0) {
-                    visited.clear();
+                    visitedTail.clear();
                     traverseMap(topographicMap, j, i);
-                    sum += visited.size();
+                    sum += visitedTail.size();
                 }
             }
         }
         System.out.println(sum);
+        System.out.println(counter);
     }
 
     public static ArrayList<int[]> readMap() throws FileNotFoundException {
@@ -42,7 +44,8 @@ public class Day10 {
 
     public static void traverseMap(ArrayList<int[]> map, int x, int y) {
         if (map.get(y)[x] == 9) {
-            visited.add(y + "," + x);
+            visitedTail.add(y + "," + x);
+            counter++;
             return;
         }
 
