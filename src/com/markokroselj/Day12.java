@@ -17,7 +17,8 @@ public class Day12 {
 
         int totalPrice = 0;
         int perimeter = 0;
-
+        int corners = 0;
+        int totalPrice2 = 0;
 
         for (int i = 0; i < map.size(); i++) {
             for (int j = 0; j < map.get(i).length(); j++) {
@@ -44,20 +45,73 @@ public class Day12 {
                         if (y + 1 >= map.size()) perimeter++;
                         if (y + 1 < map.size() && map.get(y + 1).charAt(x) != type)
                             perimeter++;
+
+
+                        if (!region.contains(coordinate(x - 1, y - 1)) && !region.contains(coordinate(x - 1, y))
+                                && !region.contains(coordinate(x, y - 1)))
+                            corners++;
+
+                        if (!region.contains(coordinate(x + 1, y - 1)) && !region.contains(coordinate(x + 1, y))
+                                && !region.contains(coordinate(x, y - 1)))
+                            corners++;
+
+                        if (!region.contains(coordinate(x - 1, y + 1)) && !region.contains(coordinate(x - 1, y))
+                                && !region.contains(coordinate(x, y + 1)))
+                            corners++;
+
+                        if (!region.contains(coordinate(x + 1, y + 1)) && !region.contains(coordinate(x + 1, y))
+                                && !region.contains(coordinate(x, y + 1)))
+                            corners++;
+
+                        if (region.contains(coordinate(x, y + 1)) && region.contains(coordinate(x + 1, y)) &&
+                                !region.contains(coordinate(x + 1, y + 1)))
+                            corners++;
+
+                        if (region.contains(coordinate(x, y + 1)) && region.contains(coordinate(x - 1, y)) &&
+                                !region.contains(coordinate(x - 1, y + 1)))
+                            corners++;
+
+                        if (region.contains(coordinate(x, y - 1)) && region.contains(coordinate(x + 1, y)) &&
+                                !region.contains(coordinate(x + 1, y - 1)))
+                            corners++;
+
+                        if (region.contains(coordinate(x, y - 1)) && region.contains(coordinate(x - 1, y)) &&
+                                !region.contains(coordinate(x - 1, y - 1)))
+                            corners++;
+
+                        if (!region.contains(coordinate(x + 1, y)) && region.contains(coordinate(x + 1, y + 1))
+                                && !region.contains(coordinate(x, y + 1)))
+                            corners++;
+
+                        if (!region.contains(coordinate(x - 1, y)) && region.contains(coordinate(x - 1, y - 1))
+                                && !region.contains(coordinate(x, y - 1)))
+                            corners++;
+
+                        if (!region.contains(coordinate(x - 1, y)) && region.contains(coordinate(x - 1, y + 1))
+                                && !region.contains(coordinate(x, y + 1)))
+                            corners++;
+
+                        if (!region.contains(coordinate(x + 1, y)) && region.contains(coordinate(x + 1, y - 1))
+                                && !region.contains(coordinate(x, y - 1)))
+                            corners++;
                     }
 
                     totalPrice += region.size() * perimeter;
                     visitedPlants.addAll(region);
                     perimeter = 0;
-
+                    totalPrice2 += region.size() * corners;
+                    corners = 0;
                     region.clear();
                 }
             }
         }
         System.out.println(totalPrice);
-
+        System.out.println(totalPrice2);
     }
 
+    public static String coordinate(int x, int y) {
+        return x + "," + y;
+    }
 
     public static ArrayList<String> readGardenPlotsMap() throws FileNotFoundException {
         ArrayList<String> map = new ArrayList<String>();
